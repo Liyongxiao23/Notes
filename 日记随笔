@@ -1,0 +1,83 @@
+linux 服务器项目环境搭建
+
+1. 通过XSHELL6 创建站点 输入要连接的服务器的 主机 和端口号 
+  例： 主机： 11.101.2.36  端口号：22  用户名: root  密码: scxdcj
+       --输入用户名和密码连接上服务器
+
+
+2. 安装jdk 
+  具体步骤参考: https://blog.csdn.net/fukai8350/article/details/80383011
+
+
+3. 安装tomcat:
+  3.1 先下载一个 linux 版本的tomcat 安装包
+
+  3.2 下载好之后，在linux中进入你想要安装的目录 执行命令 rz, 在弹窗文件目录中
+选择tomcat安装包的位置 选择上传。 上传完成之后 使用命令 tar –xzvf 解压即可
+  例：  
+        tar –xzvf apache-tomcat-9.0.24
+
+  3.3 配置环境  ， 使用命令 vim /etc/profile 打开配置文件，点击O键或I 键对配置文件进行编辑， 在配置文件的末尾配置 jdk 的路径 和tomcat 的安装路径
+   例：
+export JAVA_HOME=/usr/java/jdk1.8.0_11
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JAVA_HOME}/lib/*:${JRE_HOME}/lib:$CLASSPATH
+export JAVA_PATH=${JAVA_HOME}/bin:${JRE_HOME}/bin
+export CATALINA_HOME=/root/apache-tomcat-9.0.24
+export PATH=$PATH:${JAVA_PATH}
+
+中途可以按ESC 取消编辑模式  通过命令 :q! 退出配置文件， 当编辑完配置文件后通过命令 :wq 退出并保存。 在修改了配置文件后需要通过命令 source /etc/profile 重新加载配置文件使其生效。 另外需要注意配置文件中的编写格式，不然source /etc/profile 命令将不会生效。
+
+3.4如果需要修改端口号可以进入 conf文件下的目录 修改server.xml. 通过命令 ls 可以查看当前路径下的文件列表， 通过命令 vim + 文件名.后缀名  可以编辑文件
+例: 
+     cd apache-tomcat-9.0.24/conf
+     vim server.xml
+同样的 编辑完成后通过命令 :wq退出并保存
+ 
+
+
+4. 验证安装是否通过
+  4.1 进入到tomcat 安装目录的bin 文件下 执行命令 ./startup.sh  启动tomcat 。启动完成之后会有 tomcat started 的提示 ，然后 执行命令 ps –ef|grep java 查看 目前已经启动的文件里有没有tomcat。
+ 
+说明tomcat经启起来了。
+
+4.2 更多细节参考：https://blog.csdn.net/fukai8350/article/details/80467224
+本次搭建linux环境没有安装数据库 ， 有需要的话也可以另行装一个。
+
+
+
+
+
+
+项目的部署和运行
+
+1. 后台代码打包 
+  通过ideal 编辑软件的terminal 窗口执行 pro_package.bat 命令，项目会根据脚本文件自动打包成jar 包放在 项目工作空间的 target 文件夹下， 附带一个 pro_run.sh 的脚本执行文件。
+
+2. 前台代码打包
+  通过配置 编译脚本  build  执行之后 会在dist文件夹下生成一个static 文件夹和一个index.html.
+
+3. 将打包好的前后台包和文件 放入到linux 环境对应的位置 便完成了文件的上传。可以借助filezilla， xtpf 等工具创建站点连接linux 进行文件的上传。
+
+4. tomcat 服务器会自动加载上传的前端文件， 上传的后台jar文件 可以进入到jar文件存放的路径通过pro_run.sh 脚本执行jar文件
+例: 
+     cd /root/java/accident
+     ./pro_run.sh test 
+
+5.脚本执行完后可以通过 ps –ef|grep java 命令查看 jar文件是否启动完成。
+
+
+
+
+
+个人遇到的问题:
+1. Source /etc/profile 命令用不了，不生效。原因 配置文件格式 有误
+2.Commission denied  执行命令被拒绝。 原因 没有给脚本文件执行的权限 ，执行命令chmod +x 文件名.后缀名 给文件赋予执行权限。
+3. No such file or directory 执行文件的时候报找不到文件或路径 ， 原因 配置文件中编码格式出了问题。通过命令vim 打开该脚本文件 执行命令 :set ff 回车 显示 fileformat = dos .  重新设置下文件格式 执行命令 :set ff = unix  然后命令:wq保存退出就行。  
+4 使用tail    -f    nohup.out 事实查看日志
+
+     
+
+   
+     
+     
