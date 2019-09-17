@@ -75,8 +75,7 @@ export PATH=$PATH:${JAVA_PATH}
 2.Commission denied  执行命令被拒绝。 原因 没有给脚本文件执行的权限 ，执行命令chmod +x 文件名.后缀名 给文件赋予执行权限。
 3. No such file or directory 执行文件的时候报找不到文件或路径 ， 原因 配置文件中编码格式出了问题。通过命令vim 打开该脚本文件 执行命令 :set ff 回车 显示 fileformat = dos .  重新设置下文件格式 执行命令 :set ff = unix  然后命令:wq保存退出就行。  
 4 使用tail    -f    nohup.out 事实查看日志
-
-     
+5.使用 命令 ps -ef|grep  java|grep -v grep|cut -c 9-15|xargs kill -9 杀掉后台运行的进程
 
    
      
