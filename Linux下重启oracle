@@ -1,0 +1,53 @@
+Linux下启动/关闭Oracle
+一、Linux下启动Oracle
+
+　　Linux下启动Oracle分为两步：
+
+　　1）启动监听；
+
+　　2）启动数据库实例；
+
+1.登录服务器，切换到oracle用户，或者以oracle用户登录
+
+[admin@dataserver ~]$ su - oracle
+密码：
+[oracle@dataserver ~]$
+2.打开监听服务
+
+[oracle@localhost ~]$ lsnrctl start
+可以通过lsnrctl status命令查看Oracle监听器运行状况
+
+[oracle@localhost ~]$ lsnrctl status
+3.以SYS用户身份登录Oracle
+
+复制代码
+[oracle@localhost ~]$ sqlplus /nolog
+
+SQL*Plus: Release 11.2.0.1.0 Production on Fri Dec 1 23:29:19 2017
+
+Copyright (c) 1982, 2009, Oracle.  All rights reserved.
+
+SQL> conn /as sysdba
+Connected to an idle instance.
+复制代码
+切换用户：
+
+CONN 用户名/密码 [AS SYSDBA]，如果是sys用户一定要写上AS　SYSDBA
+
+4.通过startup命令启动实例
+
+复制代码
+SQL> startup
+ORACLE instance started.
+
+Total System 
+... ...
+Database mounted.
+Database opened.
+SQL>
+复制代码
+ 
+
+如果遇到问题：ORA-00845 MEMORY_TARGET not supported onthis system
+则先在root用户下面执行以下语句：
+mount -t tmpfs shmfs -o size=16g /dev/shm
